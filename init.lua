@@ -10,36 +10,41 @@ function toBits(num)
     return result
 end   
 
-function toDecimal (bitTable)
+function toDecimal(bitTable)
     local bits = bitTable;
     local result = 0;
     local powers = { 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1 };
 
     --print("Converting the following 12-bit number: " .. dump(bits))
     
-    for j in pairs(bitTable) do
-        print(result .. ' ' .. powers[j] .. ' ' .. bits[j])
-        result = result + (powers[j] * bits[j]);
+    for key,bitValue in pairs(bitTable) do
+        --print(result .. ' ' .. powers[key] .. ' ' .. bitValue)
+        result = result + (powers[key] * bitValue);
         print(result)
     end
 
     return result
 end        
 
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
+function dump(object)
+   if type(object) == 'table' then
+      local s = '{ ';
+      
+      for k,v in pairs(object) do
+         if type(k) ~= 'number' then 
+	     k = '"' .. k .. '"' 
+	 end
+         
+	 s = s .. '[' .. k .. '] = ' .. dump(v) .. ',';
       end
-      return s .. '} '
+      
+      return s .. '} ';
    else
-      return tostring(o)
+      return tostring(object);
    end
 end
 
-function getCelsius()
+function getRawTemperature()
     -- force a conversion process to start on thermocoupler
     --gpio.write(csPin, gpio.LOW);
     --tmr.delay(1000);
@@ -61,9 +66,10 @@ function getCelsius()
     local firstBits  = toBits(firstString);
     local secondBits = toBits(secondString); 
     
-    local tempBits = { firstBits[2], firstBits[3], firstBits[4], firstBits[5], firstBits[6], firstBits[7], firstBits[8], secondBits[1], secondBits[2], secondBits[3], secondBits[4], secondBits[5] };
+    local tempBits = { firstBits[2], firstBits[3], firstBits[4], firstBits[5], firstBits[6], firstBits[7], firstBits[8], 
+                       secondBits[1], secondBits[2], secondBits[3], secondBits[4], secondBits[5] };
 
-    return toDecimal(tempBits) / 4;
+    return toDecimal(tempBits);
 end
 
 print("Setting up SPI");
@@ -71,14 +77,39 @@ print("Setting up SPI");
 -- pin 8 = CS, force CS to LOW to get the first bit of data
 csPin = 8;
 
+-- TODO: move this to its own function
+
 spi.setup(1, spi.MASTER, spi.CPOL_HIGH, spi.CPHA_HIGH, spi.DATABITS_8, 0);
 gpio.mode(csPin, gpio.OUTPUT);
 
-print(getCelsius());
+print(getRawTemperature());
+
+--
+
+
+-- TODO: write some test code for my functions
+
+print('test of toDecimal, should return 4095: ');
+print(toDecimal({1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}));
+
+
+--
+
+
+print('test of toDecimal, should return 512: ');
+print(toDecimal({0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+
+
+--
+
+
+print('test of toDecimal, should return 1025: ');
+print(toDecimal({0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}));
+
 
 --[[
 
---do a loop here to move the data to the server every 30 seconds or so
+-- TODO: write code to probe the temp and dump it to the server every x seconds or so
 
 -- perform a temperature reading every 30 seconds
 tmr.alarm(0, 30000, 1, function() 
