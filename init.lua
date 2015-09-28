@@ -41,14 +41,14 @@ end
 
 function getCelsius()
     -- force a conversion process to start on thermocoupler
-    gpio.write(csPin, gpio.LOW);
-    tmr.delay(1000);
+    --gpio.write(csPin, gpio.LOW);
+    --tmr.delay(1000);
     
     gpio.write(csPin, gpio.HIGH);
-    tmr.delay(1000);
+    tmr.delay(250000); -- 0.25 sec
     
     gpio.write(csPin, gpio.LOW);
-    tmr.delay(50000);
+    tmr.delay(500000); -- 0.5 sec
     
     -- read 2 bytes, which is 16 bits, which is what it should be putting out
     local temp = spi.recv(1, 2);
@@ -68,9 +68,24 @@ end
 
 print("Setting up SPI");
 
--- pin 8 = CS force CS to LOW to get the first bit of data
+-- pin 8 = CS, force CS to LOW to get the first bit of data
 csPin = 8;
+
 spi.setup(1, spi.MASTER, spi.CPOL_HIGH, spi.CPHA_HIGH, spi.DATABITS_8, 0);
 gpio.mode(csPin, gpio.OUTPUT);
 
 print(getCelsius());
+
+--[[
+
+--do a loop here to move the data to the server every 30 seconds or so
+
+-- perform a temperature reading every 30 seconds
+tmr.alarm(0, 30000, 1, function() 
+  -- get temp
+  -- json encode stuff ?
+  -- send temp to back-end
+end );
+
+]]
+

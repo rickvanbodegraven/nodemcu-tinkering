@@ -1,0 +1,47 @@
+function dump_string (input)
+    local length = string.len(input);
+    local result = "";
+
+    for i = 1, length do
+        if 
+
+    end
+end
+
+
+
+
+
+
+
+
+
+function dump_string (input)
+    local length = string.len(input);
+    local result = "";
+
+    for i = 1, length do
+        if 
+
+
+{ [1] = 0,[2] = 0,[3] = 0,[4] = 0,[5] = 1,[6] = 0,[7] = 1,[8] = 1,[9] = 0,[10] = 0,[11] = 1,[12] = 0,} --print(toDecimal(tempBits));
+
+
+
+--tempBits = { firstBits[2], firstBits[3], firstBits[4], firstBits[5], firstBits[6], firstBits[7], firstBits[8], secondBits[1], secondBits[2], secondBits[3], secondBits[4], secondBits[5] };
+
+
+
+
+
+
+--print("Setting up WiFi");
+
+--wifi.setmode(wifi.STATION);
+--wifi.sta.config("Valgard", "WifiWachtwoordRick2014");
+--wifi.sta.connect();
+
+--print("WiFi status: ");
+--print(wifi.sta.status());
+--print("WiFi IP: ");
+--print(wifi.sta.getip());
